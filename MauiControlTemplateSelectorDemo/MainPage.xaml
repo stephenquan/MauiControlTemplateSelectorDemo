@@ -1,0 +1,116 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="MauiControlTemplateSelectorDemo.MainPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:local="clr-namespace:MauiControlTemplateSelectorDemo"
+    xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+    x:Name="mainPage">
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <ControlTemplate x:Key="templateText">
+                <Grid Padding="5,5,5,5">
+                    <Entry Placeholder="Enter some text" />
+                </Grid>
+            </ControlTemplate>
+            <ControlTemplate x:Key="templateNote">
+                <Grid Padding="5,5,5,5">
+                    <Label Text="This is a note" />
+                </Grid>
+            </ControlTemplate>
+            <ControlTemplate x:Key="templateDateTime">
+                <Grid Padding="5,5,5,5">
+                    <DatePicker />
+                </Grid>
+            </ControlTemplate>
+            <x:String x:Key="questionTypeText">Text</x:String>
+            <x:String x:Key="questionTypeNote">Note</x:String>
+            <x:String x:Key="questionTypeDateTime">DateTime</x:String>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <ScrollView x:DataType="local:MainPage" BindingContext="{Reference mainPage}">
+        <VerticalStackLayout Padding="30,30,30,200" Spacing="25">
+
+            <!--#region  ControlTemplate selector with DataTriggers-->
+            <Label Text="ControlTemplate selector with DataTriggers" />
+
+            <CollectionView ItemsSource="{Binding Questions}">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="local:Question">
+                        <ContentView ControlTemplate="{StaticResource templateText}">
+                            <ContentView.Triggers>
+                                <DataTrigger
+                                    Binding="{Binding Type}"
+                                    TargetType="ContentView"
+                                    Value="Note">
+                                    <Setter Property="ControlTemplate" Value="{StaticResource templateNote}" />
+                                </DataTrigger>
+                                <DataTrigger
+                                    Binding="{Binding Type}"
+                                    TargetType="ContentView"
+                                    Value="DateTime">
+                                    <Setter Property="ControlTemplate" Value="{StaticResource templateDateTime}" />
+                                </DataTrigger>
+                            </ContentView.Triggers>
+                        </ContentView>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+            <!--#endregion-->
+
+            <!--#region  ControlTemplate selector with MultiMathExpressionConverter-->
+            <Label Text="ControlTemplate selector with MultiMathExpressionConverter" />
+
+            <CollectionView ItemsSource="{Binding Questions}">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="local:Question">
+                        <VerticalStackLayout>
+                            <ContentView
+                                x:Name="contentView"
+                                Padding="0"
+                                ControlTemplate="{MultiBinding {Binding Type},
+                                                               {Binding x:DataType='x:String', Source='Note'},
+                                                               {Binding x:DataType='x:String', Source='DateTime'},
+                                                               {Binding x:DataType=ControlTemplate, Source={StaticResource templateText}},
+                                                               {Binding x:DataType=ControlTemplate, Source={StaticResource templateNote}},
+                                                               {Binding x:DataType=ControlTemplate, Source={StaticResource templateDateTime}},
+                                                               Converter={toolkit:MultiMathExpressionConverter},
+                                                               ConverterParameter='x0 == x1 ? x4 : (x0 == x2 ? x5 : x3)'}" />
+
+                        </VerticalStackLayout>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+            <!--#endregion-->
+
+            <!--#region  ControlTemplate selector with MultiMathExpressionConverter-->
+            <Label Text="ControlTemplate selector with ResourceDictionary lookup" />
+
+            <CollectionView ItemsSource="{Binding Questions}">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="local:Question">
+                        <VerticalStackLayout>
+                            <ContentView
+                                x:Name="contentView"
+                                Padding="0"
+                                ControlTemplate="{MultiBinding {Binding Type},
+                                                               {Binding x:DataType='x:String', Source='Note'},
+                                                               {Binding x:DataType='x:String', Source='DateTime'},
+                                                               {Binding x:DataType=ControlTemplate, Source={StaticResource templateText}},
+                                                               {Binding x:DataType=ControlTemplate, Source={StaticResource templateNote}},
+                                                               {Binding x:DataType=ControlTemplate, Source={StaticResource templateDateTime}},
+                                                               Converter={toolkit:MultiMathExpressionConverter},
+                                                               ConverterParameter='x0 == x1 ? x4 : (x0 == x2 ? x5 : x3)'}" />
+
+                        </VerticalStackLayout>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+            <!--#endregion-->
+
+        </VerticalStackLayout>
+    </ScrollView>
+
+</ContentPage>
