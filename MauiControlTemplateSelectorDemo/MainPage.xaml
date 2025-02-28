@@ -8,7 +8,7 @@
     x:Name="mainPage">
 
     <ContentPage.Resources>
-        <ResourceDictionary>
+        <ResourceDictionary x:Name="rd">
             <ControlTemplate x:Key="templateText">
                 <Grid Padding="5,5,5,5">
                     <Entry Placeholder="Enter some text" />
@@ -85,25 +85,14 @@
             </CollectionView>
             <!--#endregion-->
 
-            <!--#region  ControlTemplate selector with MultiMathExpressionConverter-->
+            <!--#region  ControlTemplate selector with ResourceDictionary lookup-->
             <Label Text="ControlTemplate selector with ResourceDictionary lookup" />
 
             <CollectionView ItemsSource="{Binding Questions}">
                 <CollectionView.ItemTemplate>
                     <DataTemplate x:DataType="local:Question">
                         <VerticalStackLayout>
-                            <ContentView
-                                x:Name="contentView"
-                                Padding="0"
-                                ControlTemplate="{MultiBinding {Binding Type},
-                                                               {Binding x:DataType='x:String', Source='Note'},
-                                                               {Binding x:DataType='x:String', Source='DateTime'},
-                                                               {Binding x:DataType=ControlTemplate, Source={StaticResource templateText}},
-                                                               {Binding x:DataType=ControlTemplate, Source={StaticResource templateNote}},
-                                                               {Binding x:DataType=ControlTemplate, Source={StaticResource templateDateTime}},
-                                                               Converter={toolkit:MultiMathExpressionConverter},
-                                                               ConverterParameter='x0 == x1 ? x4 : (x0 == x2 ? x5 : x3)'}" />
-
+                            <local:ResourceContentView Key="{Binding Type, StringFormat='template{0}'}" Source="{Reference rd}" />
                         </VerticalStackLayout>
                     </DataTemplate>
                 </CollectionView.ItemTemplate>
